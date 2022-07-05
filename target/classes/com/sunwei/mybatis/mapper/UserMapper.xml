@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--mybatis配置头文件-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwei.mybatis.mapper.UserMapper">
+<!-- User findById(int id);-->
+    <select id="findById" parameterType="int" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user where id = #{id}
+    </select>
+<!--  int save(User suer);-->
+<!--   id;  name;  age;  address;-->
+    <insert id="save" parameterType="com.sunwei.mybatis.mapper.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user (name,age,address) values (#{name},#{age} ,#{address});
+    </insert>
+
+<!--        int update(User user);   无返回值 所以不是设置其他参数-->
+    <update id="updateUser" parameterType="com.sunwei.mybatis.mapper.User">
+        update user
+        set name = #{name},
+            age = #{age},
+            address = #{address}
+        where id = #{id}
+    </update>
+
+<!--       int deleteUserById(int id);-->
+    <delete id="deleteUserById" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+
+<!--    List<User> findAgeById(int age);-->
+    <select id="findAgeById" parameterType="int" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user where age > #{age}
+    </select>
+
+<!--        int countAllInfo();-->
+    <select id="countAllInfo" resultType="int">
+        select count(1) from user
+    </select>
+
+<!--         List<User> limtUser(@Param("index") int index,
+                        @Param("size") int size);-->
+    <select id="limtUser" parameterType="java.util.Map" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user limit #{index} , #{size}
+    </select>
+    
+<!--      分页实现 方式二      List<User> limitUserTwo(); -->
+    <select id="limitUserTwo" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user
+    </select>
+
+<!--        List<User> findByAgeWhere(int age);-->
+    <select id="findByAgeWhere" parameterType="int" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user
+        <where>
+            <if test="age > 0">
+                and age > 0
+            </if>
+            <if test="age &lt; 15">
+                and age &lt; 23
+            </if>
+        </where>
+    </select>
+
+<!--        List<User> findUserListByIds(@Param("userIdList") List<Integer> userlist);-->
+<!--    select * from user where id in(1,2,3,4,5,6)-->
+    <select id="findUserListByIds" parameterType="arraylist" resultType="com.sunwei.mybatis.mapper.User">
+        select * from user
+        <where>
+            <if test="userIdList != null and userIdList.size > 0">
+                id in
+                <foreach collection="userIdList" item="userId" separator="," open="(" close=")">
+                    #{userId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
